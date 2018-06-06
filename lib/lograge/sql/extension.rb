@@ -19,6 +19,7 @@ end
 module Lograge
   class ActiveRecordLogSubscriber < ActiveSupport::LogSubscriber
     def sql(event)
+      return if Lograge.ignore?(event)
       ActiveRecord::LogSubscriber.runtime += event.duration
       return if event.payload[:name] == 'SCHEMA'
       Thread.current[:lograge_sql_queries] ||= []
